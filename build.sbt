@@ -17,3 +17,5 @@ sparkPackageName := "databricks/spark-corenlp"
 licenses := Seq("GPL-3.0" -> url("http://opensource.org/licenses/GPL-3.0"))
 
 libraryDependencies += "edu.stanford.nlp" % "stanford-corenlp" % "3.5.2"
+
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.0" % "test"
