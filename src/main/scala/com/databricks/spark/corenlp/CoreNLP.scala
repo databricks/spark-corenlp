@@ -3,6 +3,7 @@ package com.databricks.spark.corenlp
 import java.{lang => jl, util => ju}
 import java.util.{Properties, UUID}
 
+import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 
 import com.google.protobuf.{ByteString, MessageOrBuilder}
@@ -29,6 +30,8 @@ import org.apache.spark.sql.types._
  */
 class CoreNLP(override val uid: String) extends Transformer {
 
+  import CoreNLP._
+
   def this() = this("corenlp_" + UUID.randomUUID().toString.takeRight(12))
 
   val inputCol: Param[String] = new Param(this, "inputCol", "input column name")
@@ -50,7 +53,16 @@ class CoreNLP(override val uid: String) extends Transformer {
 
   def setAnnotators(value: Array[String]): this.type = set(annotators, value)
 
-  // TODO: param to flatten nested fields
+  def flattenNestedFields: Param[Array[String]] =
+    new Param(this, "flattenNestedFields",
+      "a list of nested fields delimited by `_` to be flattened under the output column, e.g., " +
+        "`sentence_token_word` extracts all token words as an array field under the output column")
+
+  def getFlattenNestedFields: Array[String] = $(flattenNestedFields)
+
+  def setFlattenNestedFields(value: Array[String]): this.type = set(flattenNestedFields, value)
+
+  setDefault(flattenNestedFields -> Array.empty)
 
   override def copy(extra: ParamMap): Transformer = defaultCopy(extra)
 
@@ -62,14 +74,22 @@ class CoreNLP(override val uid: String) extends Transformer {
       val doc = new Annotation(text)
       coreNLP.annotate(doc)
       val serializer = new ProtobufAnnotationSerializer()
-      CoreNLP.convertMessage(serializer.toProto(doc), CoreNLP.docSchema)
+      val row = CoreNLP.convertMessage(serializer.toProto(doc), docSchema)
+      Row(row.toSeq ++ $(flattenNestedFields).map(flatten(row, docSchema, _)): _*)
     }
-    dataset.withColumn($(outputCol), callUDF(f, CoreNLP.docSchema, col($(inputCol))))
+    dataset.withColumn($(outputCol), callUDF(f, outputSchema, col($(inputCol))))
   }
 
   @DeveloperApi
   override def transformSchema(schema: StructType): StructType = {
-    new StructType(schema.fields :+ new StructField($(outputCol), CoreNLP.docSchema))
+    new StructType(schema.fields :+ new StructField($(outputCol), outputSchema))
+  }
+
+  private def outputSchema: StructType = {
+    val flattenedStructFields = $(flattenNestedFields).map { f =>
+      CoreNLP.flattenStructField(docSchema, f)
+    }
+    StructType(docSchema.fields ++ flattenedStructFields)
   }
 }
 
@@ -135,6 +155,37 @@ object CoreNLP extends Logging {
         x.asScala.map(convert(_, elementType)).toSeq
       case (x: MessageOrBuilder, schema: StructType) =>
         convertMessage(x, schema)
+    }
+  }
+
+  private def flattenStructField(dataType: DataType, fields: String): StructField = {
+    val elementType = extractElementType(dataType, fields.split("_").toList)
+    StructField(fields, ArrayType(elementType))
+  }
+
+  @tailrec
+  private def extractElementType(dataType: DataType, fields: List[String]): DataType = {
+    (dataType, fields) match {
+      case (_, Nil) => dataType
+      case (structType: StructType, field :: tail) =>
+        extractElementType(structType(field).dataType, tail)
+      case (arrayType: ArrayType, _) =>
+        extractElementType(arrayType.elementType, fields)
+    }
+  }
+
+  private def flatten(any: Any, dataType: DataType, fields: String): Seq[Any] = {
+    flatten(any, dataType, fields.split("_").toList)
+  }
+
+  private def flatten(any: Any, dataType: DataType, fields: List[String]): Seq[Any] = {
+    (any, dataType, fields) match {
+      case (seq: Seq[_], arrayType: ArrayType, _) =>
+        seq.flatMap(flatten(_, arrayType.elementType, fields))
+      case (_, _, Nil) =>
+        Seq(any)
+      case (row: Row, structType: StructType, field :: tail) =>
+        flatten(row.getAs(structType.fieldIndex(field)), structType(field).dataType, tail)
     }
   }
 }

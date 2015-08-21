@@ -29,17 +29,23 @@ class CoreNLPSuite extends FunSuite with BeforeAndAfterAll {
     val coreNLP = new CoreNLP()
       .setInputCol("text")
       .setAnnotators(Array("tokenize", "cleanxml", "ssplit"))
+      .setFlattenNestedFields(Array("sentence_token_word", "sentence_characterOffsetBegin"))
       .setOutputCol("parsed")
     val parsed = coreNLP.transform(input)
-    parsed.printSchema()
-    val first = parsed.first()
-    val words = first.getAs[Row]("parsed")
-      .getAs[Seq[Row]]("sentence").map(
-        _.getAs[Seq[Row]]("token").map(
-          _.getAs[String]("word")))
+    val first = parsed.first().getAs[Row]("parsed")
+
+    val words = first.getAs[Seq[Row]]("sentence").map(
+      _.getAs[Seq[Row]]("token").map(
+        _.getAs[String]("word")))
     val expected = Seq(
       Seq("Stanford", "University", "is", "located", "in", "California", "."),
       Seq("It", "is", "a", "great", "university", "."))
     assert(words === expected)
+
+    val flattenedWords = first.getAs[Seq[String]]("sentence_token_word")
+    assert(flattenedWords === expected.flatten)
+
+    val flattenedSentenceOffsets = first.getAs[Seq[Int]]("sentence_characterOffsetBegin")
+    assert(flattenedSentenceOffsets === Seq(5, 51))
   }
 }
