@@ -22,6 +22,7 @@ class CoreNLPSuite extends FunSuite with BeforeAndAfterAll {
   }
 
   test("CoreNLP") {
+    // This example is taken from Stanford CoreNLP website.
     val input = sqlContext.createDataFrame(Seq(
       (1, "<xml>Stanford University is located in California. It is a great university.</xml>")
     )).toDF("id", "text")

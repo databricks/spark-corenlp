@@ -9,6 +9,7 @@ import com.google.protobuf.{ByteString, MessageOrBuilder}
 import com.google.protobuf.Descriptors.{Descriptor, EnumValueDescriptor, FieldDescriptor}
 import edu.stanford.nlp.pipeline._
 
+import org.apache.spark.Logging
 import org.apache.spark.annotation.DeveloperApi
 import org.apache.spark.ml.Transformer
 import org.apache.spark.ml.param._
@@ -16,6 +17,16 @@ import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spark.sql.functions.{callUDF, col}
 import org.apache.spark.sql.types._
 
+/**
+ * A Stanford CoreNLP wrapper for Spark ML pipeline API.
+ * It reads a string column representing documents, and applies CoreNLP annotators to each document.
+ * The output column is a nested column with schema mapped from the CoreNLP Document proto
+ * ([[com.databricks.spark.corenlp.CoreNLP$.docSchema]]).
+ * Further pruning and filtering could be done via SQL statements.
+ * This requires Java 8 and CoreNLP version > 3.5.2 (not yet released) to run.
+ * Users must include CoreNLP model jars as dependencies to use language models.
+ * @see [[http://nlp.stanford.edu/software/corenlp.shtml Stanford CoreNLP]]
+ */
 class CoreNLP(override val uid: String) extends Transformer {
 
   def this() = this("corenlp_" + UUID.randomUUID().toString.takeRight(12))
@@ -33,11 +44,13 @@ class CoreNLP(override val uid: String) extends Transformer {
   def setOutputCol(value: String): this.type = set(outputCol, value)
 
   val annotators: Param[Array[String]] =
-    new Param(this, "annotators", "a list of CoreNLP annotators")
+    new Param(this, "annotators", "a list of Stanford CoreNLP annotators")
 
   def getAnnotators: Array[String] = $(annotators)
 
   def setAnnotators(value: Array[String]): this.type = set(annotators, value)
+
+  // TODO: param to flatten nested fields
 
   override def copy(extra: ParamMap): Transformer = defaultCopy(extra)
 
@@ -60,11 +73,14 @@ class CoreNLP(override val uid: String) extends Transformer {
   }
 }
 
-object CoreNLP {
+object CoreNLP extends Logging {
 
+  /**
+   * Spark SQL schema mapped from Stanford CoreNLP Document proto with depth limited to 2.
+   */
   lazy val docSchema: StructType = {
     val schema = parseDescriptor(CoreNLPProtos.Document.getDescriptor, DEFAULT_DEPTH)
-    schema.printTreeString()
+    logInfo(s"CoreNLP Document schema:\ns ${schema.treeString}")
     schema
   }
 
@@ -95,7 +111,7 @@ object CoreNLP {
     StructField(desc.getName, if (desc.isRepeated) ArrayType(dataType) else dataType)
   }
 
-  def convertMessage(msg: MessageOrBuilder, schema: StructType): Row = {
+  private def convertMessage(msg: MessageOrBuilder, schema: StructType): Row = {
     val values = msg.getDescriptorForType.getFields.asScala.view.zip(schema.fields).map {
       case (desc, field) =>
         assert(desc.getName == field.name)
@@ -104,8 +120,9 @@ object CoreNLP {
     Row(values: _*)
   }
 
-  def convert(any: Any, dataType: DataType): Any = {
+  private def convert(any: Any, dataType: DataType): Any = {
     (any, dataType) match {
+      case (null, _) => null
       case (_, NullType) => null
       case (x: jl.Integer, IntegerType) => x
       case (x: jl.Float, FloatType) => x
