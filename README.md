@@ -240,6 +240,28 @@ root
  |    |    |-- index: integer (nullable = true)
 ~~~
 
-Further pruning and filtering could be done via SQL statements.
+Further pruning and filtering could be done via SQL statements, or via `flattenNestedFields` param.
+For example,
+
+~~~scala
+val input = sqlContext.createDataFrame(Seq(
+  (1, "<xml>Stanford University is located in California. It is a great university.</xml>")
+)).toDF("id", "text")
+val coreNLP = new CoreNLP()
+  .setInputCol("text")
+  .setAnnotators(Array("tokenize", "cleanxml", "ssplit"))
+  .setFlattenNestedFields(Array("sentence_token_word", "sentence_characterOffsetBegin"))
+  .setOutputCol("parsed")
+val parsed = coreNLP.transform(input)
+  .select("parsed.sentence_token_word", "parsed.sentence_characterOffsetBegin")
+println(parsed.first())
+~~~
+
+produces the following output:
+
+~~~
+[ArrayBuffer(Stanford, University, is, located, in, California, ., It, is, a, great, university, .),ArrayBuffer(5, 51)]
+~~~
+
 This package requires Java 8 and CoreNLP version > 3.5.2 (not yet released) to run.
 Users must include CoreNLP model jars as dependencies to use language models.
