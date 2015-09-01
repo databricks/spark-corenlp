@@ -69,10 +69,10 @@ class CoreNLP(override val uid: String) extends Transformer {
   override def transform(dataset: DataFrame): DataFrame = {
     val props = new Properties()
     props.setProperty(annotators.name, $(annotators).mkString(","))
+    val wrapper = new StanfordCoreNLPWrapper(props)
     val f = { text: String =>
-      val coreNLP = new StanfordCoreNLP(props)
       val doc = new Annotation(text)
-      coreNLP.annotate(doc)
+      wrapper.get.annotate(doc)
       val serializer = new ProtobufAnnotationSerializer()
       val row = CoreNLP.convertMessage(serializer.toProto(doc), docSchema)
       Row(row.toSeq ++ $(flattenNestedFields).map(flatten(row, docSchema, _)): _*)
