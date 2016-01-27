@@ -263,5 +263,5 @@ produces the following output:
 [ArrayBuffer(Stanford, University, is, located, in, California, ., It, is, a, great, university, .),ArrayBuffer(5, 51)]
 ~~~
 
-This package requires Java 8 and CoreNLP version > 3.5.2 (not yet released) to run.
+This package requires Java 8 and CoreNLP 3.6.0 to run.
 Users must include CoreNLP model jars as dependencies to use language models.
