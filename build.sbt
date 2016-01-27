@@ -29,4 +29,6 @@ resolvers += Resolver.mavenLocal
 
 libraryDependencies += "edu.stanford.nlp" % "stanford-corenlp" % "3.6.0"
 
+libraryDependencies += "com.google.protobuf" % "protobuf-java" % "2.6.1"
+
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.0" % "test"
