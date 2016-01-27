@@ -3,9 +3,16 @@
 
 version := "0.1-SNAPSHOT"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.6"
 
-sparkVersion := "1.5.0"
+initialize := {
+  val _ = initialize.value
+  val required = VersionNumber("1.8")
+  val current = VersionNumber(sys.props("java.specification.version"))
+  assert(VersionNumber.Strict.isCompatible(current, required), s"Java $required required.")
+}
+
+sparkVersion := "1.6.0"
 
 // change the value below to change the directory where your zip artifact will be created
 spDistDirectory := target.value

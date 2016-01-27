@@ -171,6 +171,9 @@ object CoreNLP extends Logging {
         extractElementType(structType(field).dataType, tail)
       case (arrayType: ArrayType, _) =>
         extractElementType(arrayType.elementType, fields)
+      case _ =>
+        throw new IllegalArgumentException(
+          s"Unexpected inputs: args = $dataType, fields = $fields")
     }
   }
 
@@ -186,6 +189,9 @@ object CoreNLP extends Logging {
         Seq(any)
       case (row: Row, structType: StructType, field :: tail) =>
         flatten(row.getAs(structType.fieldIndex(field)), structType(field).dataType, tail)
+      case _ =>
+        throw new IllegalArgumentException(
+          s"Unexpected inputs: any = $any, dataType = $dataType, fields = $fields")
     }
   }
 }
