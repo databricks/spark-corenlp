@@ -20,6 +20,6 @@ licenses := Seq("GPL-3.0" -> url("http://opensource.org/licenses/GPL-3.0"))
 
 resolvers += Resolver.mavenLocal
 
-libraryDependencies += "edu.stanford.nlp" % "stanford-corenlp" % "3.6.0-SNAPSHOT"
+libraryDependencies += "edu.stanford.nlp" % "stanford-corenlp" % "3.6.0"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.0" % "test"
