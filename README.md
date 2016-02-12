@@ -1,4 +1,4 @@
-## Spark-CoreNLP: a Stanford CoreNLP wrapper for Spark ML pipeline API
+## CoreNLP wrapper for Spark
 
 `com.databricks.spark.corenlp.CoreNLP` wraps
 [Stanford CoreNLP](http://nlp.stanford.edu/software/corenlp.shtml) annotation pipeline as an
