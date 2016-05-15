@@ -1,10 +1,5 @@
 package com.databricks.spark.corenlp
 
-import org.apache.spark.sql.Column
-import org.apache.spark.sql.catalyst.expressions.NamedExpression
-
-import scala.reflect.runtime.universe.TypeTag
-
 import scala.collection.JavaConverters._
 
 import edu.stanford.nlp.ling.CoreLabel
