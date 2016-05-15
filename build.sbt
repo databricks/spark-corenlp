@@ -29,7 +29,7 @@ resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
   "edu.stanford.nlp" % "stanford-corenlp" % "3.6.0",
+  "edu.stanford.nlp" % "stanford-corenlp" % "3.6.0" classifier "models",
   "com.google.protobuf" % "protobuf-java" % "2.6.1",
-  "org.scalatest" %% "scalatest" % "2.0" % "test",
-  "edu.stanford.nlp" % "stanford-corenlp" % "3.6.0" classifier "models"
+  "org.scalatest" %% "scalatest" % "2.0" % "test"
 )
