@@ -1,0 +1,14 @@
+language: scala
+
+scala:
+  - 2.10.6
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.ivy2
+    - $HOME/.sbt/launchers/
+
+script:
+  - sbt -J-Xmx3g test
