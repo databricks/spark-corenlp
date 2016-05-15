@@ -6,5 +6,12 @@ scala:
 jdk:
  - oraclejdk8
 
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.ivy2
+    - $HOME/.sbt
+
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION -J-Xmx4g test
+  - sbt ++$TRAVIS_SCALA_VERSION test
