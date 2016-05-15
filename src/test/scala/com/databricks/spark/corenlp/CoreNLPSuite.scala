@@ -5,23 +5,9 @@ import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{Row, SQLContext}
 
-class CoreNLPSuite extends FunSuite with BeforeAndAfterAll {
+class CoreNLPSuite extends SparkFunSuite {
 
-  @transient var sc: SparkContext = _
-  @transient var sqlContext: SQLContext = _
-
-  override def beforeAll(): Unit = {
-    sc = new SparkContext("local[2]", "CoreNLPSuite")
-    sqlContext = new SQLContext(sc)
-  }
-
-  override def afterAll(): Unit = {
-    sc.stop()
-    sc = null
-    sqlContext = null
-  }
-
-  test("CoreNLP") {
+  ignore("CoreNLP") {
     // This example is taken from Stanford CoreNLP website.
     val input = sqlContext.createDataFrame(Seq(
       (1, "<xml>Stanford University is located in California. It is a great university.</xml>")
