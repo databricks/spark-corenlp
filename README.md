@@ -23,6 +23,35 @@ All functions are defined under `com.databricks.spark.corenlp.functions`.
 * *`openie`*: Generates a list of Open IE triples as flat `(subject, relation, target, confidence)`
   tuples.  
 
+Users can chain the functions to create pipeline, for example:
+
+~~~scala
+import org.apache.spark.sql.functions._
+import com.databricks.spark.corenlp.functions._
+
+import sqlContext.implicits._
+
+val input = Seq(
+  (1, "<xml>Stanford University is located in California. It is a great university.</xml>")
+).toDF("id", "text")
+
+val output = input
+  .select(cleanxml('text).as('doc))
+  .select(explode(ssplit('doc)).as('sentence))
+  .select('sentence, tokenize('sentence).as('words), ner('sentence).as('nerTags))
+
+output.show(truncate = false)
+~~~
+
+~~~
++----------------------------------------------+------------------------------------------------------+--------------------------------------------------+
+|sentence                                      |words                                                 |nerTags                                           |
++----------------------------------------------+------------------------------------------------------+--------------------------------------------------+
+|Stanford University is located in California .|[Stanford, University, is, located, in, California, .]|[ORGANIZATION, ORGANIZATION, O, O, O, LOCATION, O]|
+|It is a great university .                    |[It, is, a, great, university, .]                     |[O, O, O, O, O, O]                                |
++----------------------------------------------+------------------------------------------------------+--------------------------------------------------+
+~~~
+
 ### CoreNLP as a Transformer in Spark ML pipelines API
 
 `com.databricks.spark.corenlp.CoreNLP` wraps
