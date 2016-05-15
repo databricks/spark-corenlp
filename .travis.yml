@@ -11,7 +11,7 @@ sudo: false
 cache:
   directories:
     - $HOME/.ivy2
-    - $HOME/.sbt/launchers/
+    - $HOME/.sbt
 
 script:
-  - sbt -J-Xmx4g test
+  - travis_wait sbt ++$TRAVIS_SCALA_VERSION -J-XX:ReservedCodeCacheSize=1g -J-Xmx3328m test

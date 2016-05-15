@@ -7,7 +7,7 @@ import org.apache.spark.sql.{Row, SQLContext}
 
 class CoreNLPSuite extends SparkFunSuite {
 
-  test("CoreNLP") {
+  ignore("CoreNLP") {
     // This example is taken from Stanford CoreNLP website.
     val input = sqlContext.createDataFrame(Seq(
       (1, "<xml>Stanford University is located in California. It is a great university.</xml>")
