@@ -6,12 +6,5 @@ scala:
 jdk:
  - oraclejdk8
 
-sudo: false
-
-cache:
-  directories:
-    - $HOME/.ivy2
-    - $HOME/.sbt
-
 script:
-  - travis_wait sbt ++$TRAVIS_SCALA_VERSION -J-XX:ReservedCodeCacheSize=1g -J-Xmx3328m test
+  - sbt ++$TRAVIS_SCALA_VERSION -J-Xmx4g test
