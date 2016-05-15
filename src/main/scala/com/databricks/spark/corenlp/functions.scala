@@ -79,7 +79,7 @@ object functions {
   }
 
   /**
-   * Generates the named entity tags of the sentences.
+   * Generates the named entity tags of the sentence.
    * @see [[Sentence#nerTags]]
    */
   def ner = udf { sentence: String =>
@@ -126,7 +126,7 @@ object functions {
   }
 
   /**
-   * Generates a list of Open IE triples as flat (subject, relation, object, confidence) quadruples.
+   * Generates a list of Open IE triples as flat (subject, relation, target, confidence) quadruples.
    * @see [[Sentence#openie]]
    */
   def openie = udf { sentence: String =>
