@@ -1,4 +1,4 @@
-## CoreNLP wrapper for Spark
+## CoreNLP wrapper for Apache Spark
 
 ### CoreNLP annotators as DataFrame functions in Spark SQL
 
