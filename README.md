@@ -21,7 +21,9 @@ All functions are defined under `com.databricks.spark.corenlp.functions`.
 * *`natlog`*: Generates the Natural Logic notion of polarity for each token in a sentence, returned
   as `up`, `down`, or `flat`.
 * *`openie`*: Generates a list of Open IE triples as flat `(subject, relation, target, confidence)`
-  tuples.  
+  tuples.
+* *`sentiment`*: Measures the sentiment of an input sentence on a scale of 0 (strong negative) to 4
+  (strong positive).  
 
 Users can chain the functions to create pipeline, for example:
 
@@ -37,19 +39,19 @@ val input = Seq(
 
 val output = input
   .select(cleanxml('text).as('doc))
-  .select(explode(ssplit('doc)).as('sentence))
-  .select('sentence, tokenize('sentence).as('words), ner('sentence).as('nerTags))
+  .select(explode(ssplit('doc)).as('sen))
+  .select('sen, tokenize('sen).as('words), ner('sen).as('nerTags), sentiment('sen).as('sentiment))
 
 output.show(truncate = false)
 ~~~
 
 ~~~
-+----------------------------------------------+------------------------------------------------------+--------------------------------------------------+
-|sentence                                      |words                                                 |nerTags                                           |
-+----------------------------------------------+------------------------------------------------------+--------------------------------------------------+
-|Stanford University is located in California .|[Stanford, University, is, located, in, California, .]|[ORGANIZATION, ORGANIZATION, O, O, O, LOCATION, O]|
-|It is a great university .                    |[It, is, a, great, university, .]                     |[O, O, O, O, O, O]                                |
-+----------------------------------------------+------------------------------------------------------+--------------------------------------------------+
++----------------------------------------------+------------------------------------------------------+--------------------------------------------------+---------+
+|sen                                           |words                                                 |nerTags                                           |sentiment|
++----------------------------------------------+------------------------------------------------------+--------------------------------------------------+---------+
+|Stanford University is located in California .|[Stanford, University, is, located, in, California, .]|[ORGANIZATION, ORGANIZATION, O, O, O, LOCATION, O]|1        |
+|It is a great university .                    |[It, is, a, great, university, .]                     |[O, O, O, O, O, O]                                |4        |
++----------------------------------------------+------------------------------------------------------+--------------------------------------------------+---------+
 ~~~
 
 ### CoreNLP as a Transformer in Spark ML pipelines API
