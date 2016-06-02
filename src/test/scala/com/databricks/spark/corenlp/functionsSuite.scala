@@ -80,4 +80,10 @@ class functionsSuite extends SparkFunSuite {
       Row("Stanford University", "is located in", "California", 1.0))
     testFunction(openie, sentence1, expected)
   }
+
+  test("sentiment") {
+    testFunction(sentiment, sentence1, 1)
+    testFunction(sentiment, sentence2, 4)
+    testFunction(sentiment, document, 1) // only look at the first sentence
+  }
 }

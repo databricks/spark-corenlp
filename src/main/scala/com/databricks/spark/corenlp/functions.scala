@@ -1,9 +1,14 @@
 package com.databricks.spark.corenlp
 
+import java.util.Properties
+
 import scala.collection.JavaConverters._
 
-import edu.stanford.nlp.ling.CoreLabel
-import edu.stanford.nlp.pipeline.CleanXmlAnnotator
+import edu.stanford.nlp.ling.{CoreAnnotations, CoreLabel}
+import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations
+import edu.stanford.nlp.pipeline.{CleanXmlAnnotator, StanfordCoreNLP}
+import edu.stanford.nlp.pipeline.CoreNLPProtos.Sentiment
+import edu.stanford.nlp.sentiment.SentimentCoreAnnotations
 import edu.stanford.nlp.simple.{Document, Sentence}
 import edu.stanford.nlp.util.Quadruple
 
@@ -14,6 +19,17 @@ import org.apache.spark.sql.functions.udf
  * @see [[edu.stanford.nlp.simple]]
  */
 object functions {
+
+  @transient private var sentimentPipeline: StanfordCoreNLP = _
+
+  private def getOrCreateSentimentPipeline(): StanfordCoreNLP = {
+    if (sentimentPipeline == null) {
+      val props = new Properties()
+      props.setProperty("annotators", "tokenize, ssplit, parse, sentiment")
+      sentimentPipeline = new StanfordCoreNLP(props)
+    }
+    sentimentPipeline
+  }
 
   private case class OpenIE(subject: String, relation: String, target: String, confidence: Double) {
     def this(quadruple: Quadruple[String, String, String, java.lang.Double]) =
@@ -131,5 +147,21 @@ object functions {
    */
   def openie = udf { sentence: String =>
     new Sentence(sentence).openie().asScala.map(q => new OpenIE(q)).toSeq
+  }
+
+  /**
+   * Measures the sentiment of an input sentence on a scale of 0 (strong negative) to 4 (strong
+   * positive).
+   * If the input contains multiple sentences, only the first one is used.
+   * @see [[Sentiment]]
+   */
+  def sentiment = udf { sentence: String =>
+    val pipeline = getOrCreateSentimentPipeline()
+    val annotation = pipeline.process(sentence)
+    val tree = annotation.get(classOf[CoreAnnotations.SentencesAnnotation])
+      .asScala
+      .head
+      .get(classOf[SentimentCoreAnnotations.SentimentAnnotatedTree])
+    RNNCoreAnnotations.getPredictedClass(tree)
   }
 }
