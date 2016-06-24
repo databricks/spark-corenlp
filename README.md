@@ -1,10 +1,12 @@
-## CoreNLP wrapper for Apache Spark
+## Stanford CoreNLP wrapper for Apache Spark
 
-### CoreNLP annotators as DataFrame functions in Spark SQL
+This package wraps [Stanford CoreNLP](http://stanfordnlp.github.io/CoreNLP/) annotators as Spark
+DataFrame functions following the [simple APIs](http://stanfordnlp.github.io/CoreNLP/simple.html)
+introduced in Stanford CoreNLP 3.6.0.
 
-Following the [simple APIs](http://stanfordnlp.github.io/CoreNLP/simple.html) introduced in Stanford
-CoreNLP 3.6.0, we implemented DataFrame functions to wrap those APIs, which are simple to use but
-less customizable.
+This package requires Java 8 and CoreNLP 3.6.0 to run.
+Users must include CoreNLP model jars as dependencies to use language models.
+
 All functions are defined under `com.databricks.spark.corenlp.functions`.
 
 * *`cleanxml`*: Cleans XML tags in a document and returns the cleaned document.
@@ -54,5 +56,6 @@ output.show(truncate = false)
 +----------------------------------------------+------------------------------------------------------+--------------------------------------------------+---------+
 ~~~
 
-This package requires Java 8 and CoreNLP 3.6.0 to run.
-Users must include CoreNLP model jars as dependencies to use language models.
+### Acknowledgements
+
+Many thanks to Jason Bolton from the Stanford NLP Group for API discussions.
