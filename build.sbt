@@ -5,11 +5,9 @@ organization := "databricks"
 
 name := "spark-corenlp"
 
-version := "0.2-SNAPSHOT"
+version := "0.3-SNAPSHOT"
 
-scalaVersion := "2.10.6"
-
-crossScalaVersions := Seq("2.10.6", "2.11.8")
+scalaVersion := "2.11.8"
 
 initialize := {
   val _ = initialize.value
@@ -18,7 +16,7 @@ initialize := {
   assert(VersionNumber.Strict.isCompatible(current, required), s"Java $required required.")
 }
 
-sparkVersion := "1.6.1"
+sparkVersion := "2.0.0"
 
 // change the value below to change the directory where your zip artifact will be created
 spDistDirectory := target.value

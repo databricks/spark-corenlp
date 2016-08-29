@@ -4,7 +4,8 @@ import scala.reflect.runtime.universe.TypeTag
 
 import com.databricks.spark.corenlp.functions._
 
-import org.apache.spark.sql.{Row, UserDefinedFunction}
+import org.apache.spark.sql.Row
+import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.apache.spark.sql.functions._
 
 class functionsSuite extends SparkFunSuite {
