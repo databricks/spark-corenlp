@@ -5,9 +5,9 @@ organization := "databricks"
 
 name := "spark-corenlp"
 
-version := "0.3-SNAPSHOT"
+version := "0.2-SNAPSHOT"
 
-scalaVersion := "2.11.8"
+crossScalaVersions := Seq("2.11.8", "2.10.6")
 
 initialize := {
   val _ = initialize.value
@@ -21,7 +21,7 @@ sparkVersion := "2.0.0"
 // change the value below to change the directory where your zip artifact will be created
 spDistDirectory := target.value
 
-sparkComponents += "mllib"
+sparkComponents += "sql"
 
 // add any sparkPackageDependencies using sparkPackageDependencies.
 // e.g. sparkPackageDependencies += "databricks/spark-avro:0.1"
