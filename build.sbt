@@ -5,7 +5,7 @@ organization := "databricks"
 
 name := "spark-corenlp"
 
-version := "0.2.0"
+version := "0.3.0-SNAPSHOT"
 
 crossScalaVersions := Seq("2.11.8", "2.10.6")
 
