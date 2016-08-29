@@ -5,7 +5,7 @@ organization := "databricks"
 
 name := "spark-corenlp"
 
-version := "0.2-SNAPSHOT"
+version := "0.2.0"
 
 crossScalaVersions := Seq("2.11.8", "2.10.6")
 
@@ -20,6 +20,10 @@ sparkVersion := "2.0.0"
 
 // change the value below to change the directory where your zip artifact will be created
 spDistDirectory := target.value
+
+spAppendScalaVersion := true
+
+credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
 
 sparkComponents += "sql"
 
