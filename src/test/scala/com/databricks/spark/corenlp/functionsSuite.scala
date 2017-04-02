@@ -46,7 +46,7 @@ class functionsSuite extends SparkFunSuite {
   }
 
   test("natlog") {
-    val expected = Seq("up", "down", "up", "up", "up", "up", "up")
+    val expected = Seq("up", "up", "up", "up", "up", "up", "up")
     testFunction(natlog, sentence1, expected)
   }
 
@@ -67,8 +67,8 @@ class functionsSuite extends SparkFunSuite {
   test("depparse") {
     val expected = Seq(
       Row("University", 2, "compound", "Stanford", 1, 1.0),
-      Row("located", 4, "nsubj", "University", 2, 1.0),
-      Row("located", 4, "cop", "is", 3, 1.0),
+      Row("located", 4, "nsubjpass", "University", 2, 1.0),
+      Row("located", 4, "auxpass", "is", 3, 1.0),
       Row("California", 6, "case", "in", 5, 1.0),
       Row("located", 4, "nmod:in", "California", 6, 1.0),
       Row("located", 4, "punct", ".", 7, 1.0))

@@ -28,7 +28,7 @@ initialize := {
   assert(VersionNumber.Strict.isCompatible(current, required), s"Java $required required.")
 }
 
-lazy val nlpVersion = "3.6.0"
+lazy val nlpVersion = "3.7.0"
 sparkVersion := "2.1.0"
 
 // change the value below to change the directory where your zip artifact will be created
