@@ -16,7 +16,8 @@ initialize := {
   assert(VersionNumber.Strict.isCompatible(current, required), s"Java $required required.")
 }
 
-sparkVersion := "2.0.0"
+lazy val nlpVersion = "3.7.0"
+sparkVersion := "2.1.0"
 
 // change the value below to change the directory where your zip artifact will be created
 spDistDirectory := target.value
@@ -36,8 +37,8 @@ licenses := Seq("GPL-3.0" -> url("http://opensource.org/licenses/GPL-3.0"))
 resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
-  "edu.stanford.nlp" % "stanford-corenlp" % "3.6.0",
-  "com.google.protobuf" % "protobuf-java" % "2.6.1",
-  "edu.stanford.nlp" % "stanford-corenlp" % "3.6.0" % "test" classifier "models",
-  "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+  "edu.stanford.nlp" % "stanford-corenlp" % nlpVersion,
+  "com.google.protobuf" % "protobuf-java" % "3.2.0",
+  "edu.stanford.nlp" % "stanford-corenlp" % nlpVersion % "test" classifier "models",
+  "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 )
