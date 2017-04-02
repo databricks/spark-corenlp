@@ -59,3 +59,9 @@ output.show(truncate = false)
 ### Acknowledgements
 
 Many thanks to Jason Bolton from the Stanford NLP Group for API discussions.
+
+### To build
+
+```bash
+sbt +publishLocal
+```

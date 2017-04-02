@@ -9,6 +9,18 @@ version := "0.3.0-SNAPSHOT"
 
 crossScalaVersions := Seq("2.11.8", "2.10.6")
 
+scalacOptions ++= Seq(
+  "-encoding", "UTF-8",
+  "-unchecked",
+  "-deprecation",
+  "-Xfuture",
+  "-Yno-adapted-args",
+  "-Ywarn-dead-code",
+  "-Ywarn-numeric-widen",
+  "-Ywarn-value-discard",
+  "-Ywarn-dead-code",
+  "-feature")
+
 initialize := {
   val _ = initialize.value
   val required = VersionNumber("1.8")
