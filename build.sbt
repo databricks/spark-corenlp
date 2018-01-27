@@ -7,7 +7,7 @@ name := "spark-corenlp"
 
 version := "0.3.0-SNAPSHOT"
 
-crossScalaVersions := Seq("2.11.8", "2.10.6")
+scalaVersion := "2.11.8"
 
 initialize := {
   val _ = initialize.value
@@ -16,7 +16,7 @@ initialize := {
   assert(VersionNumber.Strict.isCompatible(current, required), s"Java $required required.")
 }
 
-sparkVersion := "2.0.0"
+sparkVersion := "2.2.1"
 
 // change the value below to change the directory where your zip artifact will be created
 spDistDirectory := target.value
@@ -36,7 +36,7 @@ licenses := Seq("GPL-3.0" -> url("http://opensource.org/licenses/GPL-3.0"))
 resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
-  "edu.stanford.nlp" % "stanford-corenlp" % "3.6.0",
+  "edu.stanford.nlp" % "stanford-corenlp" % "3.8.0",
   "com.google.protobuf" % "protobuf-java" % "2.6.1",
   "edu.stanford.nlp" % "stanford-corenlp" % "3.6.0" % "test" classifier "models",
   "org.scalatest" %% "scalatest" % "2.2.6" % "test"
