@@ -36,8 +36,8 @@ licenses := Seq("GPL-3.0" -> url("http://opensource.org/licenses/GPL-3.0"))
 resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
-  "edu.stanford.nlp" % "stanford-corenlp" % "3.8.0",
+  "edu.stanford.nlp" % "stanford-corenlp" % "3.7.0",
   "com.google.protobuf" % "protobuf-java" % "2.6.1",
-  "edu.stanford.nlp" % "stanford-corenlp" % "3.8.0" % "test" classifier "models",
+  "edu.stanford.nlp" % "stanford-corenlp" % "3.7.0" % "test" classifier "models",
   "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 )
