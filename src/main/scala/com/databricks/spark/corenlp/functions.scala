@@ -79,11 +79,27 @@ object functions {
   }
 
   /**
+    * Splits a document into sentences, using implicit CoreNLPConfig.
+    * @see [[Document#sentences]]
+    */
+  def ssplit(conf: CoreNLPConfig) = udf { document: String =>
+    new Document(document).sentences(conf.props).asScala.map(_.text())
+  }
+
+  /**
    * Generates the part of speech tags of the sentence.
    * @see [[Sentence#posTags]]
    */
   def pos = udf { sentence: String =>
     new Sentence(sentence).posTags().asScala
+  }
+
+  /**
+   * Generates the part of speech tags of the sentence, using implicit CoreNLPConfig
+   * @see [[Sentence#posTags]]
+   */
+  def pos(conf: CoreNLPConfig) = udf { sentence: String =>
+    new Sentence(sentence, conf.props).posTags(conf.props).asScala
   }
 
   /**
@@ -95,11 +111,27 @@ object functions {
   }
 
   /**
+   * Generates the word lemmas of the sentence, using implicit CoreNLP configuration.
+   * @see [[Sentence#lemmas]]
+   */
+  def lemma(conf: CoreNLPConfig) = udf { sentence: String =>
+    new Sentence(sentence, conf.props).lemmas(conf.props).asScala
+  }
+
+  /**
    * Generates the named entity tags of the sentence.
    * @see [[Sentence#nerTags]]
    */
   def ner = udf { sentence: String =>
     new Sentence(sentence).nerTags().asScala
+  }
+
+  /**
+   * Generates the named entity tags of the sentence, using implicit CoreNLP configuration
+   * @see [[Sentence#nerTags]]
+   */
+  def ner(conf: CoreNLPConfig) = udf { sentence: String =>
+    new Sentence(sentence, conf.props).nerTags(conf.props).asScala
   }
 
   /**
