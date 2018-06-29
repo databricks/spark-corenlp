@@ -71,6 +71,14 @@ object functions {
   }
 
   /**
+   * Tokenizes a sentence into words, with custom config.
+   * @see [[Sentence#words]]
+   */
+  def tokenize(conf: CoreNLPConfig) = udf { sentence: String =>
+    new Sentence(sentence, conf.props).words().asScala
+  }
+
+  /**
    * Splits a document into sentences.
    * @see [[Document#sentences]]
    */
@@ -135,11 +143,43 @@ object functions {
   }
 
   /**
+    * Generates the constituency parsing of the sentence.
+    * @see [[Sentence#parse]]
+    */
+  def parse = udf { sentence: String =>
+    new Sentence(sentence).parse().asScala
+  }
+
+  /**
+    * Generates the constituency parsing of the sentence, using implicit CoreNLP configuration
+    * @see [[Sentence#parse]]
+    */
+  def parse(conf: CoreNLPConfig) = udf { sentence: String =>
+    new Sentence(sentence, conf.props).parse(conf.props).asScala
+  }
+
+  /**
    * Generates the semantic dependencies of the sentence.
    * @see [[Sentence#dependencyGraph]]
    */
   def depparse = udf { sentence: String =>
     new Sentence(sentence).dependencyGraph().edgeListSorted().asScala.map { edge =>
+      SemanticGraphEdge(
+        edge.getSource.word(),
+        edge.getSource.index(),
+        edge.getRelation.toString,
+        edge.getTarget.word(),
+        edge.getTarget.index(),
+        edge.getWeight)
+    }
+  }
+
+  /**
+   * Generates the semantic dependencies of the sentence, configurable version.
+   * @see [[Sentence#dependencyGraph]]
+   */
+  def depparse(conf: CoreNLPConfig) = udf { sentence: String =>
+    new Sentence(sentence, conf.props).dependencyGraph(conf.props).edgeListSorted().asScala.map { edge =>
       SemanticGraphEdge(
         edge.getSource.word(),
         edge.getSource.index(),
