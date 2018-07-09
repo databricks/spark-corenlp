@@ -7,7 +7,7 @@ name := "spark-corenlp"
 
 version := "0.3.0-SNAPSHOT"
 
-crossScalaVersions := Seq("2.11.8", "2.10.6")
+scalaVersion := "2.11.8"
 
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
@@ -29,7 +29,7 @@ initialize := {
 }
 
 lazy val nlpVersion = "3.7.0"
-sparkVersion := "2.1.0"
+sparkVersion := "2.3.1"
 
 // change the value below to change the directory where your zip artifact will be created
 spDistDirectory := target.value
