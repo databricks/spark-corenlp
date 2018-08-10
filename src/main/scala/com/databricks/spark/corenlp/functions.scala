@@ -15,9 +15,10 @@ import edu.stanford.nlp.util.Quadruple
 import org.apache.spark.sql.functions.udf
 
 /**
- * A collection of Spark SQL UDFs that wrap CoreNLP annotators and simple functions.
- * @see [[edu.stanford.nlp.simple]]
- */
+  * A collection of Spark SQL UDFs that wrap CoreNLP annotators and simple functions.
+  *
+  * @see [[edu.stanford.nlp.simple]]
+  */
 object functions {
 
   @transient private var sentimentPipeline: StanfordCoreNLP = _
@@ -41,16 +42,16 @@ object functions {
   private case class CorefChain(representative: String, mentions: Seq[CorefMention])
 
   private case class SemanticGraphEdge(
-    source: String,
-    sourceIndex: Int,
-    relation: String,
-    target: String,
-    targetIndex: Int,
-    weight: Double)
+                                        source: String,
+                                        sourceIndex: Int,
+                                        relation: String,
+                                        target: String,
+                                        targetIndex: Int,
+                                        weight: Double)
 
   /**
-   * Cleans XML tags in a document.
-   */
+    * Cleans XML tags in a document.
+    */
   def cleanxml = udf { document: String =>
     val annotation = new Annotation(document)
     val tokenizerAnnotator = new TokenizerAnnotator()
@@ -62,9 +63,10 @@ object functions {
   }
 
   /**
-   * Tokenizes a sentence into words.
-   * @see [[Sentence#words]]
-   */
+    * Tokenizes a sentence into words.
+    *
+    * @see [[Sentence#words]]
+    */
   def tokenize = udf { sentence: String =>
     new Sentence(sentence).words().asScala
   }
@@ -146,7 +148,11 @@ object functions {
     * @see [[Sentence#parse]]
     */
   def parse = udf { sentence: String =>
-    new Sentence(sentence).parse().asScala
+    new Sentence(sentence).parse()
+      .pennString()
+      .replaceAll("\n", " ")
+      .replaceAll("\\s{2,}", " ")
+      .trim
   }
 
   /**
@@ -154,7 +160,11 @@ object functions {
     * @see [[Sentence#parse]]
     */
   def parse(conf: CoreNLPConfig) = udf { sentence: String =>
-    new Sentence(sentence, conf.props).parse(conf.props).asScala
+    new Sentence(sentence, conf.props).parse(conf.props)
+      .pennString()
+      .replaceAll("\n", " ")
+      .replaceAll("\\s{2,}", " ")
+      .trim
   }
 
   /**
