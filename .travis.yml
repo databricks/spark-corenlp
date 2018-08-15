@@ -14,4 +14,4 @@ cache:
     - $HOME/.sbt
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION -J-Xmx4g -J-XX:MaxPermSize=4g test
+  - sbt ++$TRAVIS_SCALA_VERSION -jvm-opts travis/jvmopts test
