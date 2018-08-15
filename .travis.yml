@@ -14,6 +14,7 @@ cache:
     - $HOME/.sbt
 
 before_script:
+  # unset _JAVA_OPTIONS so we can define our own
   - _JAVA_OPTIONS=
 
 script:
