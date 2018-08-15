@@ -13,5 +13,8 @@ cache:
     - $HOME/.ivy2
     - $HOME/.sbt
 
+before_script:
+  - _JAVA_OPTIONS=
+
 script:
   - sbt ++$TRAVIS_SCALA_VERSION -jvm-opts travis/jvmopts test
