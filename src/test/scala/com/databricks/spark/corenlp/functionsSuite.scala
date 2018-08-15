@@ -56,7 +56,7 @@ class functionsSuite extends SparkFunSuite {
     testFunction(cleanxml, xml, expected)
   }
 
-  test("coref") { // ignoring this because it is slow and uses lot of ram
+  test("coref") {
     val expected = Seq(
       Row("Stanford University",
         Seq(
