@@ -41,8 +41,9 @@ class functionsSuite extends SparkFunSuite {
   }
 
   test("ner") {
-    val expected = Seq("ORGANIZATION", "ORGANIZATION", "O", "O", "O", "LOCATION", "O")
+    val expected = Seq("ORGANIZATION", "ORGANIZATION", "O", "O", "O", "STATE_OR_PROVINCE", "O")
     testFunction(ner, sentence1, expected)
+
   }
 
   test("natlog") {
@@ -55,7 +56,7 @@ class functionsSuite extends SparkFunSuite {
     testFunction(cleanxml, xml, expected)
   }
 
-  ignore("coref") { // ignoring this because it is slow and uses lot of ram
+  test("coref") {
     val expected = Seq(
       Row("Stanford University",
         Seq(
