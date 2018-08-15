@@ -4,9 +4,9 @@ import java.util.Properties
 
 import scala.collection.JavaConverters._
 
-import edu.stanford.nlp.ling.{CoreAnnotations, CoreLabel}
+import edu.stanford.nlp.ling.CoreAnnotations
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations
-import edu.stanford.nlp.pipeline.{CleanXmlAnnotator, StanfordCoreNLP}
+import edu.stanford.nlp.pipeline.{Annotation, CleanXmlAnnotator, StanfordCoreNLP, TokenizerAnnotator}
 import edu.stanford.nlp.pipeline.CoreNLPProtos.Sentiment
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations
 import edu.stanford.nlp.simple.{Document, Sentence}
@@ -52,14 +52,13 @@ object functions {
    * Cleans XML tags in a document.
    */
   def cleanxml = udf { document: String =>
-    val words = new Sentence(document).words().asScala
-    val labels = words.map { w =>
-      val label = new CoreLabel()
-      label.setWord(w)
-      label
-    }
-    val annotator = new CleanXmlAnnotator()
-    annotator.process(labels.asJava).asScala.map(_.word()).mkString(" ")
+    val annotation = new Annotation(document)
+    val tokenizerAnnotator = new TokenizerAnnotator()
+    tokenizerAnnotator.annotate(annotation)
+    val cleanXmlAnnotator = new CleanXmlAnnotator()
+    cleanXmlAnnotator.annotate(annotation)
+    val tokens = annotation.get(classOf[CoreAnnotations.TokensAnnotation])
+    tokens.asScala.map(_.word()).mkString(" ")
   }
 
   /**
