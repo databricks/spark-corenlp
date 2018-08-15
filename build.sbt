@@ -1,11 +1,11 @@
 // Your sbt build file. Guides on how to write one can be found at
 // http://www.scala-sbt.org/0.13/docs/index.html
 
+import ReleaseTransformations._
+
 organization := "databricks"
 
 name := "spark-corenlp"
-
-version := "0.3.0-SNAPSHOT"
 
 scalaVersion := "2.11.8"
 
@@ -42,4 +42,14 @@ libraryDependencies ++= Seq(
   "com.google.protobuf" % "protobuf-java" % "3.5.1",
   "edu.stanford.nlp" % "stanford-corenlp" % nlpVersion % "test" classifier "models",
   "org.scalatest" %% "scalatest" % "3.0.1" % "test"
+)
+
+// We only use sbt-release to update version numbers for now.
+releaseProcess := Seq[ReleaseStep](
+  inquireVersions,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  setNextVersion,
+  commitNextVersion
 )
