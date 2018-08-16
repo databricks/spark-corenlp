@@ -21,6 +21,7 @@ lazy val commonSettings = Seq(
   fork in Test := true,
   javaOptions in Test ++= Seq("-Xmx6g"),
   // release settings //
+  spAppendScalaVersion := true,
   // We only use sbt-release to update version numbers for now.
   releaseProcess := Seq[ReleaseStep](
     inquireVersions,
