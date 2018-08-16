@@ -18,4 +18,4 @@ before_script:
   - _JAVA_OPTIONS=
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION -jvm-opts travis/jvmopts test
+  - sbt ++$TRAVIS_SCALA_VERSION test distribution/spDist

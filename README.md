@@ -33,8 +33,6 @@ Users can chain the functions to create pipeline, for example:
 import org.apache.spark.sql.functions._
 import com.databricks.spark.corenlp.functions._
 
-import sqlContext.implicits._
-
 val input = Seq(
   (1, "<xml>Stanford University is located in California. It is a great university.</xml>")
 ).toDF("id", "text")
@@ -56,12 +54,22 @@ output.show(truncate = false)
 +----------------------------------------------+------------------------------------------------------+--------------------------------------------------+---------+
 ~~~
 
+### Dependencies
+
+Because CoreNLP depends on `protobuf-java` 3.x but Spark 2.3 depends on `protobuf-java` 2.x,
+we release `spark-corenlp` as an assembly jar that includes CoreNLP as well as its transitive dependencies,
+except `protobuf-java` being shaded.
+This might cause issues if you have CoreNLP or its dependencies on the classpath.
+
+To use `spark-corenlp`, you need one of the CoreNLP language models:
+
+~~~bash
+# Download one of the language models. 
+wget http://repo1.maven.org/maven2/edu/stanford/nlp/stanford-corenlp/3.9.1/stanford-corenlp-3.9.1-models.jar
+# Run spark-shell 
+spark-shell --packages databricks/spark-corenlp:0.3.1-s_2.11 --jars stanford-corenlp-3.9.1-models.jar
+~~~
+
 ### Acknowledgements
 
 Many thanks to Jason Bolton from the Stanford NLP Group for API discussions.
-
-### To build
-
-```bash
-sbt +publishLocal
-```
