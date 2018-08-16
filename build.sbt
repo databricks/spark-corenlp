@@ -34,10 +34,6 @@ lazy val commonSettings = Seq(
   credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
 )
 
-// apply common settings to the default project
-commonSettings
-
-// dependency settings for the default project //
 lazy val nlpVersion = "3.9.1"
 lazy val dependenciesToShade = Seq(
   ("edu.stanford.nlp" % "stanford-corenlp" % nlpVersion)
@@ -50,15 +46,10 @@ lazy val testDependencies = Seq(
   "edu.stanford.nlp" % "stanford-corenlp" % nlpVersion % "test" classifier "models",
   "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 )
-libraryDependencies ++= dependenciesToShade ++ testDependencies
 
-// release settings for the default project //
-spDist := (spDist in distribution).value
-
-// a sub-project for shading
-lazy val shaded = project.in(file(".")).settings(
+// the default subproject with shading
+lazy val root = project.in(file(".")).settings(
   commonSettings,
-  target := target.value / "shaded",
   libraryDependencies ++= (dependenciesToShade ++ testDependencies),
   assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false),
   assemblyShadeRules in assembly := Seq(
@@ -66,14 +57,15 @@ lazy val shaded = project.in(file(".")).settings(
     // Unfortunately, we cannot shade stanford-corenlp because it seems using reflection.
     ShadeRule.rename("com.google.protobuf.**" -> "com.databricks.spark.corenlp.shaded.@0").inAll
   ),
-  test in assembly := {}
+  test in assembly := {},
+  spDist := sys.error("Use 'sbt distribution/*' instead.")
 )
 
-// a sub-project for release, where we use the assembly jar and declare no dependencies
+// a subproject for release, where we use the assembly jar and declare no dependencies
 lazy val distribution = project.settings(
   commonSettings,
   target := target.value / "distribution",
   libraryDependencies ++= testDependencies,
   spShade := true,
-  assembly in spPackage := (assembly in shaded).value
+  assembly in spPackage := (assembly in root).value
 )
