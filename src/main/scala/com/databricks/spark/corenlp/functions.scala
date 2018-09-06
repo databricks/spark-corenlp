@@ -64,7 +64,6 @@ object functions {
 
   /**
     * Tokenizes a sentence into words.
-    *
     * @see [[Sentence#words]]
     */
   def tokenize = udf { sentence: String =>
@@ -72,11 +71,11 @@ object functions {
   }
 
   /**
-   * Tokenizes a sentence into words, with custom config.
-   * @see [[Sentence#words]]
-   */
-  def tokenize(conf: CoreNLPConfig) = udf { sentence: String =>
-    new Sentence(sentence, conf.props).words().asScala
+    * Tokenizes a sentence into words, with custom config.
+    * @see [[Sentence#words]]
+    */
+  def tokenize(properties: Properties) = udf { sentence: String =>
+    new Sentence(sentence, properties).words().asScala
   }
 
   /**
@@ -91,8 +90,8 @@ object functions {
     * Splits a document into sentences, using implicit CoreNLPConfig.
     * @see [[Document#sentences]]
     */
-  def ssplit(conf: CoreNLPConfig) = udf { document: String =>
-    new Document(document).sentences(conf.props).asScala.map(_.text())
+  def ssplit(properties: Properties) = udf { document: String =>
+    new Document(document).sentences(properties).asScala.map(_.text())
   }
 
   /**
@@ -107,40 +106,40 @@ object functions {
    * Generates the part of speech tags of the sentence, using implicit CoreNLPConfig
    * @see [[Sentence#posTags]]
    */
-  def pos(conf: CoreNLPConfig) = udf { sentence: String =>
-    new Sentence(sentence, conf.props).posTags(conf.props).asScala
+    def pos(properties: Properties) = udf { sentence: String =>
+    new Sentence(sentence, properties).posTags(properties).asScala
   }
 
   /**
-   * Generates the word lemmas of the sentence.
-   * @see [[Sentence#lemmas]]
-   */
+    * Generates the word lemmas of the sentence.
+    * @see [[Sentence#lemmas]]
+    */
   def lemma = udf { sentence: String =>
     new Sentence(sentence).lemmas().asScala
   }
 
   /**
-   * Generates the word lemmas of the sentence, using implicit CoreNLP configuration.
-   * @see [[Sentence#lemmas]]
-   */
-  def lemma(conf: CoreNLPConfig) = udf { sentence: String =>
-    new Sentence(sentence, conf.props).lemmas(conf.props).asScala
+    * Generates the word lemmas of the sentence, using implicit CoreNLP configuration.
+    * @see [[Sentence#lemmas]]
+    */
+  def lemma(properties: Properties) = udf { sentence: String =>
+    new Sentence(sentence, properties).lemmas(properties).asScala
   }
 
   /**
-   * Generates the named entity tags of the sentence.
-   * @see [[Sentence#nerTags]]
-   */
+    * Generates the named entity tags of the sentence.
+    * @see [[Sentence#nerTags]]
+    */
   def ner = udf { sentence: String =>
     new Sentence(sentence).nerTags().asScala
   }
 
   /**
-   * Generates the named entity tags of the sentence, using implicit CoreNLP configuration
-   * @see [[Sentence#nerTags]]
-   */
-  def ner(conf: CoreNLPConfig) = udf { sentence: String =>
-    new Sentence(sentence, conf.props).nerTags(conf.props).asScala
+    * Generates the named entity tags of the sentence, using implicit CoreNLP configuration
+    * @see [[Sentence#nerTags]]
+    */
+  def ner(properties: Properties) = udf { sentence: String =>
+    new Sentence(sentence, properties).nerTags(properties).asScala
   }
 
   /**
@@ -159,8 +158,8 @@ object functions {
     * Generates the constituency parsing of the sentence, using implicit CoreNLP configuration
     * @see [[Sentence#parse]]
     */
-  def parse(conf: CoreNLPConfig) = udf { sentence: String =>
-    new Sentence(sentence, conf.props).parse(conf.props)
+  def parse(properties: Properties) = udf { sentence: String =>
+    new Sentence(sentence, properties).parse(properties)
       .pennString()
       .replaceAll("\n", " ")
       .replaceAll("\\s{2,}", " ")
@@ -184,11 +183,11 @@ object functions {
   }
 
   /**
-   * Generates the semantic dependencies of the sentence, configurable version.
-   * @see [[Sentence#dependencyGraph]]
-   */
-  def depparse(conf: CoreNLPConfig) = udf { sentence: String =>
-    new Sentence(sentence, conf.props).dependencyGraph(conf.props).edgeListSorted().asScala.map { edge =>
+    * Generates the semantic dependencies of the sentence, configurable version.
+    * @see [[Sentence#dependencyGraph]]
+    */
+  def depparse(properties: Properties) = udf { sentence: String =>
+    new Sentence(sentence, properties).dependencyGraph(properties).edgeListSorted().asScala.map { edge =>
       SemanticGraphEdge(
         edge.getSource.word(),
         edge.getSource.index(),
