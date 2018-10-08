@@ -41,8 +41,7 @@ object functions {
 
   private case class CorefChain(representative: String, mentions: Seq[CorefMention])
 
-  private case class SemanticGraphEdge(
-                                        source: String,
+  private case class SemanticGraphEdge(source: String,
                                         sourceIndex: Int,
                                         relation: String,
                                         target: String,
@@ -87,7 +86,7 @@ object functions {
   }
 
   /**
-    * Splits a document into sentences, using implicit CoreNLPConfig.
+    * Splits a document into sentences, with custom config.
     * @see [[Document#sentences]]
     */
   def ssplit(properties: Properties) = udf { document: String =>
@@ -103,7 +102,7 @@ object functions {
   }
 
   /**
-   * Generates the part of speech tags of the sentence, using implicit CoreNLPConfig
+   * Generates the part of speech tags of the sentence, with custom config.
    * @see [[Sentence#posTags]]
    */
     def pos(properties: Properties) = udf { sentence: String =>
@@ -119,7 +118,7 @@ object functions {
   }
 
   /**
-    * Generates the word lemmas of the sentence, using implicit CoreNLP configuration.
+    * Generates the word lemmas of the sentence, with custom config.
     * @see [[Sentence#lemmas]]
     */
   def lemma(properties: Properties) = udf { sentence: String =>
@@ -135,7 +134,7 @@ object functions {
   }
 
   /**
-    * Generates the named entity tags of the sentence, using implicit CoreNLP configuration
+    * Generates the named entity tags of the sentence, with custom config.
     * @see [[Sentence#nerTags]]
     */
   def ner(properties: Properties) = udf { sentence: String =>
@@ -155,7 +154,7 @@ object functions {
   }
 
   /**
-    * Generates the constituency parsing of the sentence, using implicit CoreNLP configuration
+    * Generates the constituency parsing of the sentence, with custom config.
     * @see [[Sentence#parse]]
     */
   def parse(properties: Properties) = udf { sentence: String =>
@@ -183,7 +182,7 @@ object functions {
   }
 
   /**
-    * Generates the semantic dependencies of the sentence, configurable version.
+    * Generates the semantic dependencies of the sentence, with custom config.
     * @see [[Sentence#dependencyGraph]]
     */
   def depparse(properties: Properties) = udf { sentence: String =>

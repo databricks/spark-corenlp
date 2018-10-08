@@ -1,5 +1,7 @@
 package com.databricks.spark.corenlp
 
+import java.util.Properties
+
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
@@ -7,6 +9,7 @@ import org.scalatest.{BeforeAndAfterAll, FunSuite}
 trait SparkFunSuite extends FunSuite with BeforeAndAfterAll {
   @transient var sc: SparkContext = _
   @transient var sqlContext: SQLContext = _
+  var customProperties: Properties = _
 
   override def beforeAll(): Unit = {
     sc = SparkContext.getOrCreate(
@@ -15,6 +18,7 @@ trait SparkFunSuite extends FunSuite with BeforeAndAfterAll {
         .setAppName(this.getClass.getSimpleName)
     )
     sqlContext = SQLContext.getOrCreate(sc)
+    customProperties = Properties()
   }
 
   override def afterAll(): Unit = {
