@@ -9,7 +9,7 @@ import org.scalatest.{BeforeAndAfterAll, FunSuite}
 trait SparkFunSuite extends FunSuite with BeforeAndAfterAll {
   @transient var sc: SparkContext = _
   @transient var sqlContext: SQLContext = _
-  var customProperties: Properties = _
+  @transient var customProperties: Properties = _
 
   override def beforeAll(): Unit = {
     sc = SparkContext.getOrCreate(
@@ -18,12 +18,14 @@ trait SparkFunSuite extends FunSuite with BeforeAndAfterAll {
         .setAppName(this.getClass.getSimpleName)
     )
     sqlContext = SQLContext.getOrCreate(sc)
-    customProperties = Properties()
+    customProperties = new Properties()
+    customProperties.setProperty("tokenize.whitespace", "true")
   }
 
   override def afterAll(): Unit = {
     sc.stop()
     sc = null
     sqlContext = null
+    customProperties = null
   }
 }

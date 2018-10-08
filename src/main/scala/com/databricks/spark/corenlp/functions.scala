@@ -199,6 +199,7 @@ object functions {
 
   /**
    * Generates the coref chains of the document.
+    * @see [[CorefMention]]
    */
   def coref = udf { document: String =>
     new Document(document).coref().asScala.values.map { chain =>

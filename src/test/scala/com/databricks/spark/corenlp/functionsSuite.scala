@@ -93,4 +93,45 @@ class functionsSuite extends SparkFunSuite {
     testFunction(sentiment, document, 1) // only look at the first sentence
   }
 
+  test("ssplit with properties") {
+    testFunction(ssplit(customProperties), document, Seq(document))
+  }
+
+  test("tokenize with properties") {
+    val expected = Seq("Stanford", "University", "is", "located", "in", "California.")
+    testFunction(tokenize(customProperties), sentence1, expected)
+  }
+
+  test("pos with properties") {
+    val expected = Seq("NNP", "NNP", "VBZ", "JJ", "IN", "NN")
+    testFunction(pos(customProperties), sentence1, expected)
+  }
+
+  test("lemma with properties") {
+    val expected = Seq("Stanford", "University", "be", "located", "in", "california.")
+    testFunction(lemma(customProperties), sentence1, expected)
+  }
+
+  test("ner with properties") {
+    val expected = Seq("ORGANIZATION", "ORGANIZATION", "O", "O", "O", "LOCATION")
+    testFunction(ner(customProperties), sentence1, expected)
+
+  }
+
+  test("parse with properties") {
+    val expected = "(ROOT (S (NP (NNP Stanford) (NNP University)) (VP (VBZ is) (VP (VBN located) (PP (IN in) (NP (NNP California.)))))))"
+    testFunction(parse(customProperties), sentence1, expected)
+  }
+
+  test("depparse with properties") {
+    val expected = Seq(
+      Row("University", 2, "compound", "Stanford", 1, 1.0),
+      Row("located", 4, "nsubjpass", "University", 2, 1.0),
+      Row("located", 4, "auxpass", "is", 3, 1.0),
+      Row("California.", 6, "case", "in", 5, 1.0),
+      Row("located", 4, "nmod:in", "California.", 6, 1.0)
+    )
+    testFunction(depparse(customProperties), sentence1, expected)
+  }
+
 }
