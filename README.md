@@ -17,6 +17,7 @@ All functions are defined under `com.databricks.spark.corenlp.functions`.
 * *`ner`*: Generates the named entity tags of the sentence.
 * *`depparse`*: Generates the semantic dependencies of the sentence and returns a flattened list of
   `(source, sourceIndex, relation, target, targetIndex, weight)` relation tuples.
+* *`parse`*: Generates the consistuency tree of the sentence and returns a `String` in Penn string format.
 * *`coref`*: Generates the coref chains in the document and returns a list of
   `(rep, mentions)` chain tuples, where `mentions` are in the format of
   `(sentNum, startIndex, mention)`.
