@@ -1,18 +1,21 @@
 language: scala
 
 scala:
-  - 2.10.6
   - 2.11.8
 
 jdk:
  - oraclejdk8
 
-sudo: false
+sudo: required # needed to have >4GB RAM
 
 cache:
   directories:
     - $HOME/.ivy2
     - $HOME/.sbt
 
+before_script:
+  # unset _JAVA_OPTIONS so we can define our own
+  - _JAVA_OPTIONS=
+
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION test
+  - sbt ++$TRAVIS_SCALA_VERSION test distribution/spDist

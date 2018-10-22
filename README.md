@@ -2,9 +2,9 @@
 
 This package wraps [Stanford CoreNLP](http://stanfordnlp.github.io/CoreNLP/) annotators as Spark
 DataFrame functions following the [simple APIs](http://stanfordnlp.github.io/CoreNLP/simple.html)
-introduced in Stanford CoreNLP 3.6.0.
+introduced in Stanford CoreNLP 3.7.0.
 
-This package requires Java 8 and CoreNLP 3.6.0 to run.
+This package requires Java 8 and CoreNLP to run.
 Users must include CoreNLP model jars as dependencies to use language models.
 
 All functions are defined under `com.databricks.spark.corenlp.functions`.
@@ -33,8 +33,6 @@ Users can chain the functions to create pipeline, for example:
 import org.apache.spark.sql.functions._
 import com.databricks.spark.corenlp.functions._
 
-import sqlContext.implicits._
-
 val input = Seq(
   (1, "<xml>Stanford University is located in California. It is a great university.</xml>")
 ).toDF("id", "text")
@@ -54,6 +52,22 @@ output.show(truncate = false)
 |Stanford University is located in California .|[Stanford, University, is, located, in, California, .]|[ORGANIZATION, ORGANIZATION, O, O, O, LOCATION, O]|1        |
 |It is a great university .                    |[It, is, a, great, university, .]                     |[O, O, O, O, O, O]                                |4        |
 +----------------------------------------------+------------------------------------------------------+--------------------------------------------------+---------+
+~~~
+
+### Dependencies
+
+Because CoreNLP depends on `protobuf-java` 3.x but Spark 2.3 depends on `protobuf-java` 2.x,
+we release `spark-corenlp` as an assembly jar that includes CoreNLP as well as its transitive dependencies,
+except `protobuf-java` being shaded.
+This might cause issues if you have CoreNLP or its dependencies on the classpath.
+
+To use `spark-corenlp`, you need one of the CoreNLP language models:
+
+~~~bash
+# Download one of the language models. 
+wget http://repo1.maven.org/maven2/edu/stanford/nlp/stanford-corenlp/3.9.1/stanford-corenlp-3.9.1-models.jar
+# Run spark-shell 
+spark-shell --packages databricks/spark-corenlp:0.3.1-s_2.11 --jars stanford-corenlp-3.9.1-models.jar
 ~~~
 
 ### Acknowledgements
