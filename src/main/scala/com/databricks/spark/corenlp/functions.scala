@@ -11,7 +11,7 @@ import edu.stanford.nlp.pipeline.CoreNLPProtos.Sentiment
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations
 import edu.stanford.nlp.simple.{Document, Sentence}
 import edu.stanford.nlp.util.Quadruple
-
+import edu.stanford.nlp.io.IOUtils
 import org.apache.spark.sql.functions.udf
 
 /**
@@ -19,20 +19,21 @@ import org.apache.spark.sql.functions.udf
  * @see [[edu.stanford.nlp.simple]]
  */
 object functions {
-
+  @transient private var props: Properties = _
   @transient private var sentimentPipeline: StanfordCoreNLP = _
+
+  private def getOrCreateProps(): Properties = {
+    if (props == null) {
+      props = new Properties()
+      props.load(IOUtils.readerFromString("StanfordCoreNLP-chinese.properties"))
+    }
+    props
+  }
 
   private def getOrCreateSentimentPipeline(): StanfordCoreNLP = {
     if (sentimentPipeline == null) {
       val props = new Properties()
-      props.setProperty("annotators", "tokenize, ssplit, parse, sentiment")
-      props.setProperty("sighanCorporaDict", "data");  
-      // props.setProperty("NormalizationTable", "data/norm.simp.utf8");  
-      // props.setProperty("normTableEncoding", "UTF-8");  
-      // below is needed because CTBSegDocumentIteratorFactory accesses it  
-      props.setProperty("serDictionary","data/dict-chris6.ser.gz");  
-      props.setProperty("inputEncoding", "UTF-8");  
-      props.setProperty("sighanPostProcessing", "true");  
+      props.load(IOUtils.readerFromString("StanfordCoreNLP-chinese.properties"))
       sentimentPipeline = new StanfordCoreNLP(props)
     }
     sentimentPipeline
@@ -73,7 +74,8 @@ object functions {
    * @see [[Sentence#words]]
    */
   def tokenize = udf { sentence: String =>
-    new Sentence(sentence).words().asScala
+    val props = getOrCreateProps()
+    new Sentence(sentence, props).words().asScala
   }
 
   /**
@@ -81,7 +83,8 @@ object functions {
    * @see [[Document#sentences]]
    */
   def ssplit = udf { document: String =>
-    new Document(document).sentences().asScala.map(_.text())
+    val props = getOrCreateProps()
+    new Document(props, document).sentences().asScala.map(_.text())
   }
 
   /**
@@ -89,7 +92,8 @@ object functions {
    * @see [[Sentence#posTags]]
    */
   def pos = udf { sentence: String =>
-    new Sentence(sentence).posTags().asScala
+    val props = getOrCreateProps()
+    new Sentence(sentence, props).posTags().asScala
   }
 
   /**
@@ -97,7 +101,8 @@ object functions {
    * @see [[Sentence#lemmas]]
    */
   def lemma = udf { sentence: String =>
-    new Sentence(sentence).lemmas().asScala
+    val props = getOrCreateProps()
+    new Sentence(sentence, props).lemmas().asScala
   }
 
   /**
@@ -105,7 +110,8 @@ object functions {
    * @see [[Sentence#nerTags]]
    */
   def ner = udf { sentence: String =>
-    new Sentence(sentence).nerTags().asScala
+    val props = getOrCreateProps()
+    new Sentence(sentence, props).nerTags().asScala
   }
 
   /**
@@ -113,7 +119,8 @@ object functions {
    * @see [[Sentence#dependencyGraph]]
    */
   def depparse = udf { sentence: String =>
-    new Sentence(sentence).dependencyGraph().edgeListSorted().asScala.map { edge =>
+    val props = getOrCreateProps()
+    new Sentence(sentence, props).dependencyGraph().edgeListSorted().asScala.map { edge =>
       SemanticGraphEdge(
         edge.getSource.word(),
         edge.getSource.index(),
@@ -128,7 +135,8 @@ object functions {
    * Generates the coref chains of the document.
    */
   def coref = udf { document: String =>
-    new Document(document).coref().asScala.values.map { chain =>
+    val props = getOrCreateProps()
+    new Document(props, document).coref().asScala.values.map { chain =>
       val rep = chain.getRepresentativeMention.mentionSpan
       val mentions = chain.getMentionsInTextualOrder.asScala.map { m =>
         CorefMention(m.sentNum, m.startIndex, m.mentionSpan)
@@ -143,7 +151,8 @@ object functions {
    * @see [[Sentence#natlogPolarities]]
    */
   def natlog = udf { sentence: String =>
-    new Sentence(sentence).natlogPolarities().asScala
+    val props = getOrCreateProps()
+    new Sentence(sentence, props).natlogPolarities().asScala
         .map(_.toString)
   }
 
@@ -152,7 +161,8 @@ object functions {
    * @see [[Sentence#openie]]
    */
   def openie = udf { sentence: String =>
-    new Sentence(sentence).openie().asScala.map(q => new OpenIE(q)).toSeq
+    val props = getOrCreateProps()
+    new Sentence(sentence, props).openie().asScala.map(q => new OpenIE(q)).toSeq
   }
 
   /**
