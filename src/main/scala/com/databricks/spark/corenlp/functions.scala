@@ -25,16 +25,15 @@ object functions {
   private def getOrCreateProps(): Properties = {
     if (props == null) {
       props = new Properties()
-      props.load(IOUtils.readerFromString("StanfordCoreNLP-chinese.properties"))
+      val properties = System.getProperty("corenlp.props")
+      props.load(IOUtils.readerFromString(properties))
     }
     props
   }
 
   private def getOrCreateSentimentPipeline(): StanfordCoreNLP = {
     if (sentimentPipeline == null) {
-      val props = new Properties()
-      props.load(IOUtils.readerFromString("StanfordCoreNLP-chinese.properties"))
-      sentimentPipeline = new StanfordCoreNLP(props)
+      sentimentPipeline = new StanfordCoreNLP(getOrCreateProps())
     }
     sentimentPipeline
   }
