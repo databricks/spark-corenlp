@@ -68,4 +68,12 @@ lazy val distribution = project.settings(
   libraryDependencies ++= testDependencies,
   spShade := true,
   assembly in spPackage := (assembly in root).value
+
 )
+
+artifact in (Compile, assembly) := {
+  val art = (artifact in (Compile, assembly)).value
+  art.withClassifier(Some("assembly"))
+}
+
+addArtifact(artifact in (Compile, assembly), assembly)

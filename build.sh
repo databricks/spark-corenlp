@@ -1,1 +1,1 @@
-sbt package publishLocal
+sbt assembly publishLocal
