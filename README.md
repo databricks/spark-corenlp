@@ -65,9 +65,9 @@ To use `spark-corenlp`, you need one of the CoreNLP language models:
 
 ~~~bash
 # Download one of the language models. 
-wget http://repo1.maven.org/maven2/edu/stanford/nlp/stanford-corenlp/3.9.2/stanford-corenlp-3.9.2-models.jar
+wget http://repo1.maven.org/maven2/edu/stanford/nlp/stanford-corenlp/3.9.1/stanford-corenlp-3.9.1-models.jar
 # Run spark-shell 
-spark-shell --packages databricks/spark-corenlp:0.4.0-spark_2.4-scala_2.11 --jars stanford-corenlp-3.9.2-models.jar
+spark-shell --packages databricks/spark-corenlp:0.4.0-spark_2.4-scala_2.11 --jars stanford-corenlp-3.9.1-models.jar
 ~~~
 
 ### Acknowledgements

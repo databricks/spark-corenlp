@@ -34,7 +34,7 @@ lazy val commonSettings = Seq(
   credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
 )
 
-lazy val nlpVersion = "3.9.2"
+lazy val nlpVersion = "3.9.1"
 lazy val dependenciesToShade = Seq(
   ("edu.stanford.nlp" % "stanford-corenlp" % nlpVersion)
     .exclude("joda-time", "joda-time") // provided by Spark
