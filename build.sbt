@@ -11,8 +11,8 @@ lazy val commonSettings = Seq(
   scalaVersion := "2.11.8",
   sparkVersion := "2.4.0",
   version := (version in ThisBuild).value +
-    s"-spark_${majorVersion(sparkVersion.value)}" +
-    s"-scala_${majorVersion(scalaVersion.value)}",
+    s"-spark${majorVersion(sparkVersion.value)}" +
+    s"-scala${majorVersion(scalaVersion.value)}",
   initialize := {
     val _ = initialize.value
     // require Java 8+
