@@ -56,7 +56,7 @@ output.show(truncate = false)
 
 ### Dependencies
 
-Because CoreNLP depends on `protobuf-java` 3.x but Spark 2.3 depends on `protobuf-java` 2.x,
+Because CoreNLP depends on `protobuf-java` 3.x but Spark 2.4 depends on `protobuf-java` 2.x,
 we release `spark-corenlp` as an assembly jar that includes CoreNLP as well as its transitive dependencies,
 except `protobuf-java` being shaded.
 This might cause issues if you have CoreNLP or its dependencies on the classpath.
@@ -65,9 +65,9 @@ To use `spark-corenlp`, you need one of the CoreNLP language models:
 
 ~~~bash
 # Download one of the language models. 
-wget http://repo1.maven.org/maven2/edu/stanford/nlp/stanford-corenlp/3.9.1/stanford-corenlp-3.9.1-models.jar
+wget http://repo1.maven.org/maven2/edu/stanford/nlp/stanford-corenlp/3.9.2/stanford-corenlp-3.9.2-models.jar
 # Run spark-shell 
-spark-shell --packages databricks/spark-corenlp:0.3.1-s_2.11 --jars stanford-corenlp-3.9.1-models.jar
+spark-shell --packages databricks/spark-corenlp:0.4.0-spark_2.4-scala_2.11 --jars stanford-corenlp-3.9.2-models.jar
 ~~~
 
 ### Acknowledgements
