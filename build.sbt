@@ -7,7 +7,7 @@ lazy val commonSettings = Seq(
   licenses := Seq("GPL-3.0" -> url("http://opensource.org/licenses/GPL-3.0")),
   // dependency settings //
   scalaVersion := "2.11.8",
-  sparkVersion := "2.3.1",
+  sparkVersion := "2.4.0",
   initialize := {
     val _ = initialize.value
     // require Java 8+
@@ -34,7 +34,7 @@ lazy val commonSettings = Seq(
   credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
 )
 
-lazy val nlpVersion = "3.9.1"
+lazy val nlpVersion = "3.9.2"
 lazy val dependenciesToShade = Seq(
   ("edu.stanford.nlp" % "stanford-corenlp" % nlpVersion)
     .exclude("joda-time", "joda-time") // provided by Spark
