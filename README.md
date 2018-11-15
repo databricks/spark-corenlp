@@ -54,6 +54,11 @@ output.show(truncate = false)
 +----------------------------------------------+------------------------------------------------------+--------------------------------------------------+---------+
 ~~~
 
+### Databricks
+
+If you are a Databricks user, please follow the instructions in this
+[example notebook](https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/1233855/1962483213436895/588180/latest.html).
+
 ### Dependencies
 
 Because CoreNLP depends on `protobuf-java` 3.x but Spark 2.4 depends on `protobuf-java` 2.x,
