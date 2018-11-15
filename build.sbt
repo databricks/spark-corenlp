@@ -1,5 +1,7 @@
 import ReleaseTransformations._
 
+def majorVersion(version: String) = version.split('.').slice(0, 2).mkString(".")
+
 lazy val commonSettings = Seq(
   organization := "databricks",
   name := "spark-corenlp",
@@ -8,6 +10,9 @@ lazy val commonSettings = Seq(
   // dependency settings //
   scalaVersion := "2.11.8",
   sparkVersion := "2.4.0",
+  version := (version in ThisBuild).value +
+    s"-spark_${majorVersion(sparkVersion.value)}" +
+    s"-scala_${majorVersion(scalaVersion.value)}",
   initialize := {
     val _ = initialize.value
     // require Java 8+
@@ -21,7 +26,7 @@ lazy val commonSettings = Seq(
   fork in Test := true,
   javaOptions in Test ++= Seq("-Xmx6g"),
   // release settings //
-  spAppendScalaVersion := true,
+  spAppendScalaVersion := false,
   // We only use sbt-release to update version numbers for now.
   releaseProcess := Seq[ReleaseStep](
     inquireVersions,
